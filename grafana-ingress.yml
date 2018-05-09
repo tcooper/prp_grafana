@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/auth-signin: https://$host/oauth2/sign_in
+    ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
+    ingress.kubernetes.io/ssl-redirect: "true"
+  name: grafana
+  namespace: sdsc-hpc-monitoring
+spec:
+  rules:
+  - host: sdsc-hpc-grafana.nautilus.optiputer.net
+    http:
+      paths:
+      - backend:
+          serviceName: grafana
+          servicePort: 3000
+  tls:
+  - secretName: sdsc-hpc-grafana.nautilus.optiputer.net
+    hosts:
+      - sdsc-hpc-grafana.nautilus.optiputer.net
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: oauth-grafana
+  namespace: sdsc-hpc-monitoring
+spec:
+  rules:
+  - host: sdsc-hpc-grafana.nautilus.optiputer.net
+    http:
+      paths:
+      - backend:
+          serviceName: oauth
+          servicePort: 4180
+        path: /oauth2
+  tls:
+  - secretName: sdsc-hpc-grafana.nautilus.optiputer.net
+    hosts:
+      - sdsc-hpc-grafana.nautilus.optiputer.net
